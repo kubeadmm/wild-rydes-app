@@ -1,4 +1,4 @@
-name: Deploy to AWS ECS
+name: Build and Deploy to ECR
 
 on:
   push:
@@ -6,30 +6,26 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Login to Amazon ECR
-        id: login-ecr
+      # Log in to Amazon ECR - Hardcode the region here if needed
+      - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push Docker image
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
-          ECR_REPOSITORY: wild-rydes
-          IMAGE_TAG: latest
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: task-def.json
-          service: wild-rydes-service
-          cluster: wild-rydes-cluster
-          wait-for-service-stability: true
+          region: us-east-1  # Replace this with your AWS region
+
+      # Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.ECR_REPOSITORY }} .
+
+      # Tag and Push Docker image to ECR
+      - name: Tag and Push Docker image to ECR
+        run: |
+          docker tag ${{ secrets.ECR_REPOSITORY }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
