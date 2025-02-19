@@ -13,11 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Log in to Amazon ECR - Hardcode the region here if needed
+      # Log in to Amazon ECR
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          region: us-east-1  # Replace this with your AWS region
+          region: us-east-1  # Hardcoding region directly
 
       # Build Docker image
       - name: Build Docker image
