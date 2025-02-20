@@ -17,9 +17,9 @@ jobs:
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: AKIAWN26JSS3YCGUPDA2
-          aws-secret-access-key: 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
-          aws-region: us-east-1  # Hardcoded region
+          aws-access-key-id: 
+          aws-secret-access-key: 
+          aws-region:   # Hardcoded region
 
       # Log in to Amazon ECR
       - name: Log in to Amazon ECR
