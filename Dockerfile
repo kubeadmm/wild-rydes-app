@@ -1,14 +1,9 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9
+FROM python:3.9-slim
 
-# Set the working directory
 WORKDIR /app
-
-# Copy the current directory contents into the container
-COPY . .
-
-# Install dependencies
+COPY . /app
 RUN pip install flask
 
-# Define the command to run the app
+EXPOSE 5000
+
 CMD ["python", "app.py"]
